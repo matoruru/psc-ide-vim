@@ -2,6 +2,8 @@
 A vim plugin that interfaces with `purs ide`, PureScript's editor support
 server.
 
+And, this version can run "purs" command with "npx" command. So "purs" on local install is going to be OK.
+
 ## Setup
 Installing the plugin via Vundle/NeoBundle/etc:
 
