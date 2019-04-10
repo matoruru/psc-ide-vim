@@ -220,7 +220,7 @@ function! PSCIDEstart(silent)
   endif
 
   let command = [ 
-	\ "purs", "ide", "server",
+	\ "npx", "purs", "ide", "server",
 	\ "-p", g:psc_ide_server_port,
 	\ "-d", dir,
 	\ "src/**/*.purs",
@@ -269,7 +269,7 @@ function! PSCIDEend()
     return
   endif
   let jobid = purescript#job#start(
-	\ ["purs", "ide", "client", "-p", g:psc_ide_server_port],
+	\ ["npx", "purs", "ide", "client", "-p", g:psc_ide_server_port],
 	\ { "on_exit": {job, status, ev -> s:PSCIDEendCallback() }
 	\ , "on_stderr": {err -> purescript#ide#utils#log(string(err), v:true)}
 	\ })

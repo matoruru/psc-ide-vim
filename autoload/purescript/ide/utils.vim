@@ -30,21 +30,21 @@ fun! purescript#ide#utils#toString(msg)
 endfun
 
 fun! purescript#ide#utils#error(msg, ...)
-  let title = a:0 > 0 && a:1 ? "purs ide server: " : "purs ide: "
+  let title = a:0 > 0 && a:1 ? "npx purs ide server: " : "purs ide: "
   echohl ErrorMsg
   echom title . join(split(a:msg, '\n'), ' ')
   echohl Normal
 endfun
 
 fun! purescript#ide#utils#warn(msg, ...)
-  let title = a:0 > 0 && a:1 ? "purs ide server: " : "purs ide: "
+  let title = a:0 > 0 && a:1 ? "npx purs ide server: " : "purs ide: "
   echohl WarningMsg
   echom title . join(split(a:msg, '\n'), ' ')
   echohl Normal
 endfun
 
 fun! purescript#ide#utils#log(msg, ...)
-  let title = a:0 > 0 && a:1 ? "purs ide server: " : "purs ide: "
+  let title = a:0 > 0 && a:1 ? "npx purs ide server: " : "purs ide: "
   echom title . join(split(a:msg, '\n'), ' ')
 endfun
 

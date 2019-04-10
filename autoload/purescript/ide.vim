@@ -42,7 +42,7 @@ fun! purescript#ide#call(input, errorm, isRetry, cb, ...)
     let cwdcommand = {'command': 'cwd'}
 
     let jobid = purescript#job#start(
-	  \ ["purs", "ide", "client", "-p", g:psc_ide_server_port],
+	  \ ["npx", "purs", "ide", "client", "-p", g:psc_ide_server_port],
 	  \ { "on_stdout": {ch, msg -> s:startFn(a:input, a:errorm, a:cb, cwdcommand, msg, silent)}
 	  \ , "on_stderr": {ch, err -> purescript#ide#utils#debug("purescript#ide#call error: " . string(err), 3)}
 	  \ })
@@ -52,7 +52,7 @@ fun! purescript#ide#call(input, errorm, isRetry, cb, ...)
 
   let enc = json_encode(a:input)
   let jobid = purescript#job#start(
-	\ ["purs", "ide", "client", "-p", g:psc_ide_server_port],
+	\ ["npx", "purs", "ide", "client", "-p", g:psc_ide_server_port],
 	\ { "on_stdout": {ch, msg -> a:cb(s:callFn(a:input, a:errorm, a:isRetry, a:cb, msg))}
 	\ , "on_stderr": {ch, err -> purescript#ide#utils#debug("purescript#ide#call error: " . purescript#ide#utils#toString(err), 0)}
 	\ })
@@ -72,12 +72,12 @@ fun! purescript#ide#callSync(input, errorm, isRetry)
     let cwdcommand = {'command': 'cwd'}
 
     call purescript#ide#utils#debug("purescript#ide#callSync: no server found", 1)
-    let cwdresp = system("purs ide client -p " . g:psc_ide_server_port, json_encode(cwdcommand))
+    let cwdresp = system("npx purs ide client -p " . g:psc_ide_server_port, json_encode(cwdcommand))
     return s:startFn(a:input, a:errorm, 0, cwdcommand, cwdresp)
   else
     call purescript#ide#utils#debug("purescript#ide#callSync: trying to reach server again", 1)
     let enc = json_encode(a:input)
-    let resp = system("purs ide client -p " . g:psc_ide_server_port, enc)
+    let resp = system("npx purs ide client -p " . g:psc_ide_server_port, enc)
     return s:callFn(a:input, a:errorm, a:isRetry, 0, resp)
   endif
 endfun
@@ -113,13 +113,13 @@ fun! s:startFn(input, errorm, cb, cwdcommand, cwdresp, ...)
   call purescript#ide#utils#debug("s:startFn: resending", 1)
   if (type(a:cb) == type(0) && !a:cb)
     let cwdresp = system(
-	  \ "purs ide client -p" . g:psc_ide_server_port,
+	  \ "npx purs ide client -p" . g:psc_ide_server_port,
 	  \ json_encode(a:cwdcommand)
 	  \ )
     call s:retryFn(a:input, a:errorm, 0, cwd, cwdresp)
   else
     let jobid = purescript#job#start(
-	  \ ["purs", "ide", "client", "-p", g:psc_ide_server_port],
+	  \ ["npx", "purs", "ide", "client", "-p", g:psc_ide_server_port],
 	  \ { "on_stdout": { ch, resp -> s:retryFn(a:input, a:errorm, a:cb, cwd, resp, silent) }
 	  \ , "on_stderr": { ch, err -> silent ? purescript#ide#utils#warn(purescript#ide#utils#toString(err)) : v:null }
 	  \ }
@@ -161,7 +161,7 @@ fun! s:retryFn(input, errorm, cb, expectedCWD, cwdresp2, ...)
   let enc = json_encode(a:input)
   if (type(a:cb) == type(0))
     let resp = system(
-	  \ "purs ide client -p" . g:psc_ide_server_port,
+	  \ "npx purs ide client -p" . g:psc_ide_server_port,
 	  \ enc
 	  \ )
     return s:callFn(a:input, a:errorm, 1, 0, resp)
@@ -169,14 +169,14 @@ fun! s:retryFn(input, errorm, cb, expectedCWD, cwdresp2, ...)
 
   if (type(a:cb) == type(0) && !a:cb)
     let resp = system(
-	  \ "purs ide client -p" . g:psc_ide_server_port
+	  \ "npx purs ide client -p" . g:psc_ide_server_port
 	  \ enc
 	  \ )
     return s:callFn(a:input, a:errorm, 1, 0, resp)
   endif
   call purescript#ide#utils#debug("callPscIde: command: " . enc, 3)
   let jobid = purescript#job#start(
-	\ ["purs", "ide", "client", "-p", g:psc_ide_server_port],
+	\ ["npx", "purs", "ide", "client", "-p", g:psc_ide_server_port],
 	\ { "on_stdout": {ch, resp -> a:cb(s:callFn(a:input, a:errorm, 1, a:cb, resp, silent))}
 	\ , "on_stderr": {ch, err -> purescript#ide#utils#debug("s:retryFn error: " . err, 3)}
 	\ })
